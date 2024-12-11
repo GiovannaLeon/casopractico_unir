@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('GetCode') {
+            steps {
+               git'https://github.com/anieto-unir/helloworld.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+               echo 'No hay que < nada. Esto es Python'
+                bat "dir"  
+            }
+        }
+   
+          
+        stage('Tests'){
+            parallel{
+                    stage('Unit') {
+                        steps {
+                             catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                                // Establece PYTHONPATH y asegúrate de que pytest se ejecute correctamente
+                                bat ''' 
+                                set PYTHONPATH=%WORKSPACE%
+                                C:\\Users\\amaro\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m pytest --junitxml=result-unit.xml  C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\024\\test1\\test\\unit
+                                '''
+                             }
+                        }
+                    }
+                    
+                    stage ('Rest'){
+                        steps {
+                             catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                                bat '''
+                        		set FLASK_APP=app\\api.py
+                        		start flask run
+                                set PYTHONPATH=%WORKSPACE%
+                                C:\\Users\\amaro\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m pytest  --junitxml=result-rest.xml C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\024\\test1\\test\\unit
+                        	    '''
+                                }
+                                 
+                             }
+                        }
+            
+                    stage('Results') {
+                        steps {
+                             junit 'result*.xml'
+                              }
+                        }
+                    }
+            }
+         }
+           
+
+}

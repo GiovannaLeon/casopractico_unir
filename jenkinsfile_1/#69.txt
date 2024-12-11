@@ -1,0 +1,93 @@
+Lanzada por el usuario Giovanna leon
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins  in C:\ProgramData\Jenkins\.jenkins\workspace\024\test1
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (GetCode)
+[Pipeline] git
+The recommended git tool is: NONE
+No credentials specified
+ > git.exe rev-parse --resolve-git-dir C:\ProgramData\Jenkins\.jenkins\workspace\024\test1\.git # timeout=10
+Fetching changes from the remote Git repository
+ > git.exe config remote.origin.url https://github.com/anieto-unir/helloworld.git # timeout=10
+Fetching upstream changes from https://github.com/anieto-unir/helloworld.git
+ > git.exe --version # timeout=10
+ > git --version # 'git version 2.47.1.windows.1'
+ > git.exe fetch --tags --force --progress -- https://github.com/anieto-unir/helloworld.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git.exe rev-parse "refs/remotes/origin/master^{commit}" # timeout=10
+Checking out Revision 7764245e3e66535975392a3f7eb2bd0f7963f189 (refs/remotes/origin/master)
+ > git.exe config core.sparsecheckout # timeout=10
+ > git.exe checkout -f 7764245e3e66535975392a3f7eb2bd0f7963f189 # timeout=10
+ > git.exe branch -a -v --no-abbrev # timeout=10
+ > git.exe branch -D master # timeout=10
+ > git.exe checkout -b master 7764245e3e66535975392a3f7eb2bd0f7963f189 # timeout=10
+Commit message: "Fix error"
+ > git.exe rev-list --no-walk 7764245e3e66535975392a3f7eb2bd0f7963f189 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] echo
+No hay que < nada. Esto es Python
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\024\test1>dir
+ El volumen de la unidad C es Windows
+ El n£mero de serie del volumen es: 6475-04AA
+
+ Directorio de C:\ProgramData\Jenkins\.jenkins\workspace\024\test1
+
+09/12/2024  02:05    <DIR>          .
+10/12/2024  03:36    <DIR>          ..
+06/12/2024  07:49                40 .gitignore
+09/12/2024  00:43    <DIR>          .pytest_cache
+09/12/2024  00:43    <DIR>          app
+06/12/2024  07:49               175 pytest.ini
+06/12/2024  07:49               418 README.md
+09/12/2024  02:05             1.401 result-rest.xml
+10/12/2024  03:15             1.401 result-unit.xml
+06/12/2024  07:49    <DIR>          test
+               5 archivos          3.435 bytes
+               5 dirs  600.413.855.744 bytes libres
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Tests)
+[Pipeline] parallel
+[Pipeline] { (Branch: Unit)
+[Pipeline] { (Branch: Rest)
+[Pipeline] stage
+[Pipeline] { (Unit)
+[Pipeline] stage
+[Pipeline] { (Rest)
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] bat
+[Pipeline] bat
+
+C:\ProgramData\Jenkins\.jenkins\workspace\024\test1>set PYTHONPATH=C:\ProgramData\Jenkins\.jenkins\workspace\024\test1 
+
+C:\ProgramData\Jenkins\.jenkins\workspace\024\test1>C:\Users\amaro\AppData\Local\Programs\Python\Python313\python.exe -m pytest --junitxml=result-unit.xml  C:\ProgramData\Jenkins\.jenkins\workspace\024\test1\test\unit 
+
+C:\ProgramData\Jenkins\.jenkins\workspace\024\test1>set FLASK_APP=app\api.py 
+
+C:\ProgramData\Jenkins\.jenkins\workspace\024\test1>start flask run 
+============================= test session starts =============================
+platform win32 -- Python 3.13.0, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\ProgramData\Jenkins\.jenkins\workspace\024\test1
+configfile: pytest.ini
+collected 10 items
+
+test\unit\calc_test.py ........                                          [ 80%]
+test\unit\util_test.py ..                                                [100%]
+
+- generated xml file: C:\ProgramData\Jenkins\.jenkins\workspace\024\test1\result-unit.xml -
+============================= 10 passed in 0.22s ==============================
+[Pipeline] }
+[Pipeline] // catchError
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
