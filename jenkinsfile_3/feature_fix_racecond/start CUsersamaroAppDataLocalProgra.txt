@@ -1,4 +1,0 @@
-//start C:\\Users\\amaro\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m flask run
-//timeout /t 10  // espera 10 segundos para que Flask esté listoç
-//et PYTHONPATH=%WORKSPACE%
-//C:\\Users\\amaro\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m pytest --junitxml=result-rest.xml %WORKSPACE%\\test\\rest
