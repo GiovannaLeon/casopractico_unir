@@ -1,0 +1,63 @@
+pipeline {
+    agent any  // Main agent block
+
+    stages {
+        stage('GetCode') {
+            steps {
+                echo "Executing on main agent"
+                git 'https://github.com/anieto-unir/helloworld.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'No hay que < nada. Esto es Python'
+                bat "dir"  
+            }
+        }
+
+        stage('Tests') {
+            parallel {
+                stage('Unit') {
+                    agent { label 'secondary-agent-1' } // Secondary agent 1
+                    steps {
+                        echo "Running on secondary-agent-1"
+                        bat "whoami"
+                        bat "hostname"
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            // Set PYTHONPATH and run pytest for unit tests
+                            bat ''' 
+                            set PYTHONPATH=%WORKSPACE%
+                            C:\\Users\\amaro\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m pytest --junitxml=result-unit.xml C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\024\\test1\\test\\unit
+                            '''
+                        }
+                    }
+                }
+                
+                stage ('Rest') {
+                    agent { label 'secondary-agent-2' } // Secondary agent 2
+                    steps {
+                        echo "Running on secondary-agent-2"
+                        bat "whoami"
+                        bat "hostname"
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            bat '''
+                            set FLASK_APP=app\\api.py
+                            start flask run
+                            set PYTHONPATH=%WORKSPACE%
+                            C:\\Users\\amaro\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m pytest --junitxml=result-rest.xml C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\024\\test1\\test\\unit
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Results') {
+            steps {
+                echo "Executing on main agent"
+                junit 'result*.xml'
+            }
+        }
+    }
+}
